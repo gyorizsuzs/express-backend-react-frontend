@@ -37,14 +37,6 @@ function App() {
 
   return (
     <div className='App'>
-      {todos.map((todo, index) => (
-        <h2 key={index}>
-          id:{todo.id}
-          <br />
-          {todo.desc}
-        </h2>
-      ))}
-
       <input
         type='text'
         value={input}
@@ -54,6 +46,13 @@ function App() {
       <button onClick={() => addTodo(todos[todos.length - 1].id + 1)}>
         add todo
       </button>
+      {todos.map((todo, index) => (
+        <h2 key={index}>
+          id:{todo.id}
+          <br />
+          {todo.desc}
+        </h2>
+      ))}
     </div>
   );
 }
