@@ -6,9 +6,10 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(true);
+  const [loadingPost, setLoadingPost] = useState(false);
 
   const fetchTodos = () => {
-    setLoading(true);
+    /* setLoading(true); */
     fetch('/todos')
       .then((res) => res.json())
       .then((resJson) => {
@@ -18,6 +19,8 @@ function App() {
   };
 
   const addTodo = (id) => {
+    setLoadingPost(true);
+
     const bodyObject = {
       id: id,
       desc: input,
@@ -33,6 +36,7 @@ function App() {
       .then((res) => res.json())
       .then((resJson) => {
         console.log(resJson);
+        setLoadingPost(false);
 
         fetchTodos();
       });
@@ -54,15 +58,29 @@ function App() {
             placeholder='enter description'
             onChange={(e) => setInput(e.target.value)}
           />
-          <button onClick={() => addTodo(todos[todos.length - 1].id + 1)}>
+          <button
+            disabled={loadingPost}
+            onClick={() => addTodo(todos[todos.length - 1].id + 1)}
+          >
             add todo
           </button>
           {todos.map((todo, index) => (
-            <h2 key={index}>
-              id:{todo.id}
-              <br />
-              {todo.desc}
-            </h2>
+            <>
+              <h2 key={index}>
+                id:{todo.id}
+                <br />
+                {todo.desc}
+              </h2>
+              <button
+                onClick={() => {
+                  fetch(`/todos/${todo.id}`, { method: 'DELETE' }).then(() =>
+                    fetchTodos().catch((err) => console.log(err))
+                  );
+                }}
+              >
+                delete
+              </button>
+            </>
           ))}
         </div>
       )}
